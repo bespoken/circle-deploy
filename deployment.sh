@@ -11,14 +11,23 @@ echo "Service: $SERVICE"
 env > env.out
 
 # install hyper
-wget https://hyper-install.s3.amazonaws.com/hyper-linux-x86_64.tar.gz
-tar xzf hyper-linux-x86_64.tar.gz
+if [ `uname -s` = 'Darwin' ]
+then
+	wget https://hyper-install.s3.amazonaws.com/hyper-mac.bin.zip
+	unzip hyper-mac.bin.zip
+else
+	wget https://hyper-install.s3.amazonaws.com/hyper-linux-x86_64.tar.gz 
+	tar xzf hyper-linux-x86_64.tar.gz
+fi
 chmod +x hyper
 ./hyper --help
 
-docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+# Login to dockerhub and get our stuff
+docker login -u $DOCKER_USER -p $DOCKER_PASS
 docker build -f docker/Dockerfile -t bespoken/$1:$3 .
 docker push bespoken/$1:$3
+
+# Configure hyper and deploy
 ./hyper config --accesskey $HYPER_KEY --secretkey $HYPER_SECRET
 ./hyper login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
 ./hyper pull bespoken/$1:$3
