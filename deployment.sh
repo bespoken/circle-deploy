@@ -33,7 +33,7 @@ docker push bespoken/$1:$3
 ./hyper pull bespoken/$1:$3
 ./hyper rm -f $SERVICE || true
 ./hyper run -d \
-	--env-file env.out \
+    --env-file env.out \
     --name $SERVICE \
     --size $5 \
     -P bespoken/$1:$3
