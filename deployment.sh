@@ -20,7 +20,6 @@ else
 	tar xzf hyper-linux-x86_64.tar.gz
 fi
 chmod +x hyper
-./hyper --help
 
 # Login to dockerhub and get our stuff
 docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
