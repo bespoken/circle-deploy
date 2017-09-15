@@ -23,7 +23,7 @@ chmod +x hyper
 ./hyper --help
 
 # Login to dockerhub and get our stuff
-docker login -u $DOCKER_USER -p $DOCKER_PASS
+docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
 docker build -f docker/Dockerfile -t bespoken/$1:$3 .
 docker push bespoken/$1:$3
 
