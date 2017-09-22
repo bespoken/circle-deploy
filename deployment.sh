@@ -27,7 +27,7 @@ docker build -f docker/Dockerfile -t bespoken/$1:$3 .
 docker push bespoken/$1:$3
 
 # Configure hyper and deploy
-./hyper config --accesskey $HYPER_KEY --secretkey $HYPER_SECRET
+./hyper config --accesskey $HYPER_KEY --secretkey $HYPER_SECRET --default-region us-west-1
 ./hyper login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
 ./hyper pull bespoken/$1:$3
 ./hyper rm -f $SERVICE || true
