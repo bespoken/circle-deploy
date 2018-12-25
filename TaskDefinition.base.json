@@ -1,0 +1,40 @@
+{
+    "containerDefinitions": [{
+		"command": [
+            "COMMAND"
+		],
+		"entryPoint": [
+            "sh",
+            "-c"
+        ],
+		"environment": [],
+        "essential": true,
+        "image": "IMAGE_NAME",
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-group": "SERVICE_NAME",
+                "awslogs-region": "us-east-1",
+                "awslogs-stream-prefix": "test-prefix"
+            }
+        },
+        "name": "SERVICE_NAME",
+        "portMappings": [{
+            "containerPort": 3000,
+            "hostPort": 3000,
+            "protocol": "tcp"
+        }],
+        "repositoryCredentials": {
+			"credentialsParameter": "DOCKER_HUB_CREDENTIALS"
+		}
+	}],
+	"cpu": "CPU",
+    "family": "SERVICE_NAME",
+    "executionRoleArn": "arn:aws:iam::048661040156:role/ecs-task-full-access",
+    "memory": "MEMORY",
+	"networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "FARGATE"
+	],
+	"taskRoleArn": "arn:aws:iam::048661040156:role/ecs-task-full-access"
+}

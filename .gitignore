@@ -1,3 +1,5 @@
 .env
 env.out
 hyper*
+node_modules
+*.out

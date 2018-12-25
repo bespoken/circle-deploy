@@ -1,0 +1,23 @@
+{
+  "name": "fargate-helper",
+  "version": "0.1.0",
+  "description": "Helper scripts for deploying to Fargate",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bespoken/circle-deploy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bespoken/circle-deploy/issues"
+  },
+  "homepage": "https://github.com/bespoken/circle-deploy#readme",
+  "dependencies": {
+    "aws-sdk": "^2.382.0",
+    "dotenv": "^6.2.0"
+  }
+}

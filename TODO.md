@@ -1,0 +1,9 @@
+- [ ] Load options from JSON files?
+- [ ] Add robustness
+	- [ ] if target group exists, delete
+	- [ ] if rules exists, delete
+- [ ] Test with circle
+- [ ] Do we need grace period?
+- [ ] Create custom log groups
+- [ ] Command should be optional - should use the dockerfile by default
+- [ ] Do find/replace on task definition instead of setting JSON? (So custom task definition does not get overridden?)
