@@ -1,12 +1,3 @@
-# Setup
-Install the package:  
-`npm install fargate-helper -g`
-
-Set these environment variables - for the AWS SDK that this relies on:
-* AWS_ACCESS_KEY_ID
-* AWS_SECRET_ACCESS_KEY
-* AWS_DEFAULT_REGION - defaults to `us-east-1` if not set
-
 # How It Works
 This tool creates or updates a Fargate service, along with the pieces that it needs (ALB, HealthCheck, etc.).
 
@@ -22,6 +13,15 @@ For existing services, the script will:
 1) Register a task definition
 2) Update the service
 
+# Setup
+Install the package:  
+`npm install fargate-helper -g`
+
+Set these environment variables - for the AWS SDK that this relies on:
+* AWS_ACCESS_KEY_ID
+* AWS_SECRET_ACCESS_KEY
+* AWS_DEFAULT_REGION - defaults to `us-east-1` if not set
+
 # Deployment Configuration
 The values for configuring the service will come from three places:
 1) Command-line
@@ -34,6 +34,18 @@ For the command-line, values are passed in with the format:
 
 For values with spaces, they should be passed in as so:  
 `--name "my value"`
+
+Example usage:  
+```
+fargate --containerPort 3000 \
+  --cpu 1024 \
+  --image bespoken/my-service-image \
+  --memory 2048 \
+  --serviceName my-service
+```
+
+**NOTE** The memory and CPU must be valid for Fargate. The supported configurations are here:  
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
 
 ## Environment Variables
 Values can also be set via environment variable
@@ -48,20 +60,25 @@ They can be found under the name "fargate-helper". Values we store there are:
 * dockerHubSecretArn: The name of the AWS Secret that stores our docker credentials
 * listenerArn: The ARN for the ALB listener being used for this account
 * roleArn: Used for taskRoleArn and executionRoleArn
+* securityGroup: The VPC security group to use
+* subnets: The list of subnets to use
 * vpcId: The VPC ID used by this configuration - specified when creating the target group on the ALB
 
 The AWS secret values are meant to be one universal defaults for the account
 
-# Important Values
-* command: The command to run for the Docker service - needs to be set if not in the Docker image [OPTIONAL]
-* containerPort: The port the service should run on [REQUIRED]
-* cpu: The CPU allocated for the service, where 1024 is equal to a full CPU [REQUIRED]
-* image: The DockerHub image to use for this service [REQUIRED]
-* logGroup: The CloudWatch Log Group to use - defaults to `fargate-cluster` [OPTIONAL]
-* memory: The amount of memory allocated for the service [REQUIRED]
-* passEnv: "true" or "false" - defaults to true. If set to false, will not automatically set pass thru environment variables in the build environment to the container environment [OPTIONAL]
-* serviceName: The name of the service [REQUIRED]
-* taskDefinition: A file to use as the baseline for the taskDefinition - if not specified, just uses the default that is included in the code [OPTIONAL]
+# Required Values
+* containerPort: The port the service should run on
+* cpu: The CPU allocated for the service, where 1024 is equal to a full CPU
+* image: The DockerHub image to use for this service
+* memory: The amount of memory allocated for the service
+* serviceName: The name of the service
+
+# Other Important Values
+Though not required, these are helpful to know:
+* command: The command to run for the Docker service - needs to be set if not in the Docker image
+* logGroup: The CloudWatch Log Group to use - defaults to `fargate-cluster`
+* passEnv: "true" or "false" - defaults to true. If set to false, will not automatically set pass thru environment variables in the build environment to the container environment
+* taskDefinition: A file to use as the baseline for the taskDefinition - if not specified, just uses the default that is included in the code
 
 # Container Configuration
 Environment variables can also be set inside the running container.
