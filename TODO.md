@@ -7,3 +7,6 @@
 - [ ] Create custom log groups
 - [ ] Command should be optional - should use the dockerfile by default
 - [ ] Do find/replace on task definition instead of setting JSON? (So custom task definition does not get overridden?)
+- [ ] Parameterize subnet and security groups (should go in secrets)
+- [ ] Figure out multiline in YAML configuraiton
+- [ ] Create deploy.sh script

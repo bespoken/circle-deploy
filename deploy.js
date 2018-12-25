@@ -71,6 +71,10 @@ class Config {
 		return Config.str(key, defaultValue) === "true" || Config.str(key, defaultValue) === true;
 	}
 
+	static has (key) {
+		return key in Config.options;
+	}
+
 	static int (key, defaultValue) {
 		return parseInt(Config.str(key, defaultValue));
 	}
@@ -212,7 +216,7 @@ class ECSManager {
 
 	static async registerTaskDefinition() {
 		let taskDefinition = TaskDefinitionBase;
-		if (Config.str("taskDefinition")) {
+		if (Config.has("taskDefinition")) {
 			// Reading in the task definition
 			const taskDefinitionString = require("fs").readFileSync(Config.str("taskDefinition"));
 			console.log("READING TaskDefinition: " + Config.str("taskDefinition"));

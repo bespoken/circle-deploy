@@ -65,3 +65,10 @@ By default, we create a target group with rules on our ALB when first creating t
 The target group will be configured:
 * With a health-check that pings the service every thirty seconds, via a GET on /
 * With an endpoint of <SERVICE_NAME>.bespoken.io
+
+# Example
+To see a sample project that uses this, check out the Utterance Tester:  
+https://github.com/bespoken/UtteranceTester
+
+In particular, here is the Circle CI configuration:  
+https://github.com/bespoken/UtteranceTester/blob/master/.circleci/config.yml#L27
