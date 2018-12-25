@@ -39,6 +39,7 @@ Example usage:
 ```
 fargate --containerPort 3000 \
   --cpu 1024 \
+  --env key=value \
   --image bespoken/my-service-image \
   --memory 2048 \
   --serviceName my-service
@@ -67,6 +68,7 @@ They can be found under the name "fargate-helper". Values we store there are:
 The AWS secret values are meant to be one universal defaults for the account
 
 # Required Values
+These values must be manually configured for the deployment to run:  
 * containerPort: The port the service should run on
 * cpu: The CPU allocated for the service, where 1024 is equal to a full CPU
 * image: The DockerHub image to use for this service
@@ -86,7 +88,7 @@ Environment variables can also be set inside the running container.
 If `--passEnv` is set to true, we take all the environment variables currently set and pass them to the container in the taskDefinition, under environment.
 
 Environment variables in the container can also be set by specifying on the command-line:  
-`node deploy.sh --env KEY=VALUE`
+`fargate --env KEY=VALUE`
 
 This will set the environment variable `key` to `value` inside the container.
 
