@@ -13,7 +13,7 @@
         "logConfiguration": {
             "logDriver": "awslogs",
             "options": {
-                "awslogs-group": "SERVICE_NAME",
+                "awslogs-group": "fargate-cluster",
                 "awslogs-region": "us-east-1",
                 "awslogs-stream-prefix": "test-prefix"
             }
@@ -30,11 +30,11 @@
 	}],
 	"cpu": "CPU",
     "family": "SERVICE_NAME",
-    "executionRoleArn": "arn:aws:iam::048661040156:role/ecs-task-full-access",
+    "executionRoleArn": "ROLE_ARN",
     "memory": "MEMORY",
 	"networkMode": "awsvpc",
     "requiresCompatibilities": [
         "FARGATE"
 	],
-	"taskRoleArn": "arn:aws:iam::048661040156:role/ecs-task-full-access"
+	"taskRoleArn": "ROLE_ARN"
 }

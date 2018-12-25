@@ -1,4 +1,13 @@
-# Getting Started
+# Setup
+Install the package:  
+`npm install fargate-helper -g`
+
+Set these environment variables - for the AWS SDK that this relies on:
+* AWS_ACCESS_KEY_ID
+* AWS_SECRET_ACCESS_KEY
+* AWS_DEFAULT_REGION - defaults to `us-east-1` if not set
+
+# How It Works
 For new services, the script will:
 1) Register a task definition
 2) Create an ALB target group, with health check
@@ -8,11 +17,6 @@ For new services, the script will:
 For existing services, the script will:
 1) Register a task definition
 2) Update the service
-
-To use this, the AWS credentials must be configured. Typically this is done via environment variables:
-* AWS_ACCESS_KEY_ID
-* AWS_SECRET_ACCESS_KEY
-* AWS_DEFAULT_REGION - defaults to `us-east-1` if not set
 
 # Deployment Configuration
 The values for configuring the service will come from three places:
@@ -77,4 +81,4 @@ To see a sample project that uses this, check out the Utterance Tester:
 https://github.com/bespoken/UtteranceTester
 
 In particular, here is the Circle CI configuration:  
-https://github.com/bespoken/UtteranceTester/blob/master/.circleci/config.yml#L27
+https://github.com/bespoken/UtteranceTester/blob/master/.circleci/config.yml#L32
