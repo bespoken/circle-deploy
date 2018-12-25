@@ -2,7 +2,8 @@
 For new services, the script will:
 1) Register a task definition
 2) Create an ALB target group, with health check
-3) Create a service
+3) Create an ALB rule for the target group - assigned to <SERVICE_NAME>.bespoken.io
+4) Create a service
 
 For existing services, the script will:
 1) Register a task definition
@@ -43,7 +44,7 @@ The AWS secret values are meant to be one universal defaults for the account
 * containerPort: The port the service should run on [REQUIRED]
 * cpu: The CPU allocated for the service, where 1024 is equal to a full CPU [REQUIRED]
 * image: The DockerHub image to use for this service [REQUIRED]
-* logGroup: The log group to use - defaults to fargate-cluster [OPTIONAL]
+* logGroup: The CloudWatch Log Group to use - defaults to `fargate-cluster` [OPTIONAL]
 * memory: The amount of memory allocated for the service [REQUIRED]
 * passEnv: "true" or "false" - defaults to true. If set to false, will not automatically set pass thru environment variables in the build environment to the container environment [OPTIONAL]
 * serviceName: The name of the service [REQUIRED]
@@ -52,9 +53,9 @@ The AWS secret values are meant to be one universal defaults for the account
 # Container Configuration
 Environment variables can also be set inside the running container.
 
-If --passEnv is set to true, we take all the environment variables currently set and pass them to the container in the taskDefinition, under environment.
+If `--passEnv` is set to true, we take all the environment variables currently set and pass them to the container in the taskDefinition, under environment.
 
-Environment variables in the container can also be set by specifying on the command-line:
+Environment variables in the container can also be set by specifying on the command-line:  
 `node deploy.sh --env KEY=VALUE`
 
 This will set the environment variable `key` to `value` inside the container.

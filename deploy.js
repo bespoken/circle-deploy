@@ -13,7 +13,6 @@ class Deployer {
 		
 		await Config.initialize(options);
 		const serviceName = Config.str("serviceName");
-		const cluster = Config.str("cluster");
 		
 		// Register the task definition first
 		const taskDefinition = await ECSManager.registerTaskDefinition();
