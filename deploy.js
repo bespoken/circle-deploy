@@ -115,6 +115,16 @@ class ALBManager {
 	static async createRule(targetGroupArn) {
 		const client = new AWS.ELBv2();
 		const listenerArn = Config.str("listenerArn");
+		
+		// Need to go through the listener to figure out the highest priority rule
+		const listenerResponse = await client.describeRules({ ListenerArn: listenerArn }).promise();
+		let highestPriority = 0;
+		for (const rule of listenerResponse.Rules) {
+			const priority = parseInt(rule.Priority);
+			if (priority > highestPriority) {
+				highestPriority = priority;
+			}
+		}
 		const hostname = Config.str("serviceName") + ".bespoken.io";
 		var params = {
 			Actions: [
@@ -130,7 +140,7 @@ class ALBManager {
 			 	}
 			], 
 			ListenerArn: listenerArn, 
-			Priority: 10
+			Priority: highestPriority + 1,
 		};
 		const rules = await client.createRule(params).promise();
 		return rules;
@@ -187,8 +197,8 @@ class ECSManager {
 			],
 			networkConfiguration: { 
 			   awsvpcConfiguration: { 
-				  securityGroups: [ "sg-daa0b1af" ],
-				  subnets: [ "subnet-02ed562e", "subnet-af5525e7" ]
+				  securityGroups: [Config.str("securityGroup")],
+				  subnets: Config.str("subnets"),
 			   }
 			},
 			serviceName: Config.str("serviceName"),
@@ -224,7 +234,7 @@ class ECSManager {
 		} 
 		const containerDefinition = taskDefinition.containerDefinitions[0];
 		if (Config.has("command")) {
-			containerDefinition.command[0] = Config.str("command");
+			containerDefinition.command = [Config.str("command")];
 		}
 		containerDefinition.image = Config.str("image");
 		containerDefinition.logConfiguration.options["awslogs-group"] = Config.str("logGroup", "fargate-cluster");
@@ -296,9 +306,6 @@ process.on("unhandledRejection", (e) => {
 
 const TaskDefinitionBase = {
     containerDefinitions: [{
-		command: [
-            "COMMAND"
-		],
 		entryPoint: [
             "sh",
             "-c"

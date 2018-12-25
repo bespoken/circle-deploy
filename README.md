@@ -8,6 +8,10 @@ Set these environment variables - for the AWS SDK that this relies on:
 * AWS_DEFAULT_REGION - defaults to `us-east-1` if not set
 
 # How It Works
+This tool creates or updates a Fargate service, along with the pieces that it needs (ALB, HealthCheck, etc.).
+
+It assumes that an image has been pushed to Docker Hub - it takes the image name and creates a Fargate service around it.
+
 For new services, the script will:
 1) Register a task definition
 2) Create an ALB target group, with health check

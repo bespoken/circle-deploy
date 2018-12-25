@@ -1,12 +1,14 @@
-- [ ] Load options from JSON files?
+**TODO**
+- [X] Test with circle
+- [X] Command should be optional - should use the dockerfile by default
+- [X] Figure out multiline in YAML configuration
+- [ ] Parameterize subnet and security groups from TaskDefinition (should go in AWS Secrets)
 - [ ] Add robustness
 	- [ ] if target group exists, delete
 	- [ ] if rules exists, delete
-- [ ] Test with circle
-- [ ] Do we need grace period?
-- [ ] Create custom log groups
-- [ ] Command should be optional - should use the dockerfile by default
+
+**Maybe**
+- [ ] Create custom log groups automatically
+- [ ] Load options from JSON files?
 - [ ] Do find/replace on task definition instead of setting JSON? (So custom task definition does not get overridden?)
-- [ ] Parameterize subnet and security groups (should go in secrets)
-- [ ] Figure out multiline in YAML configuraiton
-- [ ] Create deploy.sh script
+- [ ] Do we need grace period?
