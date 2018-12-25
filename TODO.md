@@ -2,10 +2,8 @@
 - [X] Test with circle
 - [X] Command should be optional - should use the dockerfile by default
 - [X] Figure out multiline in YAML configuration
-- [ ] Parameterize subnet and security groups from TaskDefinition (should go in AWS Secrets)
-- [ ] Add robustness
-	- [ ] if target group exists, delete
-	- [ ] if rules exists, delete
+- [X] Parameterize subnet and security groups from TaskDefinition (should go in AWS Secrets)
+- [ ] Add delete service - remove rules, target group, and service
 
 **Maybe**
 - [ ] Create custom log groups automatically
