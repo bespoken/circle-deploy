@@ -289,6 +289,7 @@ Deployer.run().then(() => {
 
 process.on("unhandledRejection", (e) => {
 	console.error("UNHANDLED: " + e.stack);
+	process.exit(1);
 });
 
 const TaskDefinitionBase = {
