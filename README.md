@@ -9,6 +9,11 @@ For existing services, the script will:
 1) Register a task definition
 2) Update the service
 
+To use this, the AWS credentials must be configured. Typically this is done via environment variables:
+* AWS_ACCESS_KEY_ID
+* AWS_SECRET_ACCESS_KEY
+* AWS_DEFAULT_REGION - defaults to `us-east-1` if not set
+
 # Deployment Configuration
 The values for configuring the service will come from three places:
 1) Command-line
@@ -40,7 +45,7 @@ They can be found under the name "fargate-helper". Values we store there are:
 The AWS secret values are meant to be one universal defaults for the account
 
 # Important Values
-* command: The command to run for the Docker service [REQUIRED]
+* command: The command to run for the Docker service - needs to be set if not in the Docker image [OPTIONAL]
 * containerPort: The port the service should run on [REQUIRED]
 * cpu: The CPU allocated for the service, where 1024 is equal to a full CPU [REQUIRED]
 * image: The DockerHub image to use for this service [REQUIRED]

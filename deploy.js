@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const AWS = require("aws-sdk");
 
 require("dotenv").config();
@@ -222,7 +223,9 @@ class ECSManager {
 			taskDefinition = JSON.parse(taskDefinitionString);
 		} 
 		const containerDefinition = taskDefinition.containerDefinitions[0];
-		containerDefinition.command[0] = Config.str("command");
+		if (Config.has("command")) {
+			containerDefinition.command[0] = Config.str("command");
+		}
 		containerDefinition.image = Config.str("image");
 		containerDefinition.logConfiguration.options["awslogs-group"] = Config.str("logGroup", "fargate-cluster");
 		containerDefinition.logConfiguration.options["awslogs-stream-prefix"] = Config.str("serviceName");

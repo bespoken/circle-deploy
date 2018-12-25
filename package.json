@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "Helper scripts for deploying to Fargate",
   "main": "index.js",
+  "bin": {
+    "fargate": "./deploy.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
