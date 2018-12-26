@@ -95,6 +95,8 @@ These values must be manually configured for the deployment to run:
 
 # Other Important Values
 Though not required, these are useful parameters for more advanced cases:
+* env: Key-value pair that is passed to the TaskDefition/container runtime
+* envFile: The relative path to a file that contains environment settings - set inside the TaskDefinition/container runtime
 * logGroup: The CloudWatch Log Group to use - defaults to `fargate-cluster`
 * passEnv: "true" or "false" - defaults to true. If set to false, will not automatically set pass thru environment variables in the build environment to the container environment
 * taskDefinition: A file to use as the baseline for the taskDefinition - if not specified, just uses the default that is included in the code
