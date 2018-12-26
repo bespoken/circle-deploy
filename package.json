@@ -4,7 +4,7 @@
   "description": "Helper scripts for deploying to Fargate",
   "main": "index.js",
   "bin": {
-    "fargate": "./deploy.js"
+    "fargate": "./index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

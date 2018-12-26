@@ -3,7 +3,8 @@
 - [X] Command should be optional - should use the dockerfile by default
 - [X] Figure out multiline in YAML configuration
 - [X] Parameterize subnet and security groups from TaskDefinition (should go in AWS Secrets)
-- [ ] Add delete service - remove rules, target group, and service
+- [X] Add delete service - remove rules, target group, and service
+- [ ] Add scheduler
 
 **Maybe**
 - [ ] Create custom log groups automatically

@@ -1,17 +1,44 @@
 # How It Works
-This tool creates or updates a Fargate service, along with the pieces that it needs (ALB, HealthCheck, etc.).
+This tool creates or updates a Fargate service, along with the pieces that it relies on (ELB Rules, Target Group, Health Check, etc.).
 
 It assumes that an image has been pushed to Docker Hub - it takes the image name and creates a Fargate service around it.
 
-For new services, the script will:
+The tool supports the following actions:
+* create: Creates a service
+* delete: Deletes a service
+* service: Creates or updates a service (depending on if it already exists)
+* update: Updates a service
+
+The syntax for the script is:  
+`fargate <action> <options>`
+
+Example (creates or updates the service `my-service` with the specified parameters):
+```
+fargate service \
+  --command "node lib/service.js" \
+  --containerPort 3000 \
+  --cpu 1024 \
+  --env key=value \
+  --image bespoken/my-service-image \
+  --memory 2048 \
+  --name my-service
+```
+
+For `create`, the script will:  
 1) Register a task definition
-2) Create an ALB target group, with health check
-3) Create an ALB rule for the target group - assigned to <SERVICE_NAME>.bespoken.io
+2) Create an ELB target group, with health check
+3) Create an ELB rule for the target group - assigned to <SERVICE_NAME>.bespoken.io
 4) Create a service
 
-For existing services, the script will:
+For `update`, the script will:  
 1) Register a task definition
 2) Update the service
+
+For `delete`, the script will:  
+1) Delete ELB rule associated with the service
+2) Delete the target group associated with the service
+2) Update the desiredCount to 0 for the service (necessary before deletion)
+4) Delete the service
 
 # Setup
 Install the package:  
@@ -34,16 +61,6 @@ For the command-line, values are passed in with the format:
 
 For values with spaces, they should be passed in as so:  
 `--name "my value"`
-
-Example usage:  
-```
-fargate --containerPort 3000 \
-  --cpu 1024 \
-  --env key=value \
-  --image bespoken/my-service-image \
-  --memory 2048 \
-  --serviceName my-service
-```
 
 **NOTE** The memory and CPU must be valid for Fargate. The supported configurations are here:  
 https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
@@ -69,15 +86,15 @@ The AWS secret values are meant to be one universal defaults for the account
 
 # Required Values
 These values must be manually configured for the deployment to run:  
+* command: The command to run for the Docker service
 * containerPort: The port the service should run on
 * cpu: The CPU allocated for the service, where 1024 is equal to a full CPU
 * image: The DockerHub image to use for this service
 * memory: The amount of memory allocated for the service
-* serviceName: The name of the service
+* name: The name of the service
 
 # Other Important Values
-Though not required, these are helpful to know:
-* command: The command to run for the Docker service - needs to be set if not in the Docker image
+Though not required, these are useful parameters for more advanced cases:
 * logGroup: The CloudWatch Log Group to use - defaults to `fargate-cluster`
 * passEnv: "true" or "false" - defaults to true. If set to false, will not automatically set pass thru environment variables in the build environment to the container environment
 * taskDefinition: A file to use as the baseline for the taskDefinition - if not specified, just uses the default that is included in the code
@@ -92,12 +109,14 @@ Environment variables in the container can also be set by specifying on the comm
 
 This will set the environment variable `key` to `value` inside the container.
 
-# ALB Configuration
-By default, we create a target group with rules on our ALB when first creating the service.
+# ELB Configuration
+By default, we create a target group with rules on our ELB when first creating the service.
 
 The target group will be configured:
 * With a health-check that pings the service every thirty seconds, via a GET on /
-* With an endpoint of <SERVICE_NAME>.bespoken.io
+* With a rule that directs traffic for `<SERVICE_NAME>.bespoken.io` to the service
+
+For more complex ELB configurations, we recommend they be done manually, and then only update be called (which does not modify the ELB configuration).
 
 # Example
 To see a sample project that uses this, check out the Utterance Tester:  
