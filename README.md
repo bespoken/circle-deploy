@@ -49,27 +49,54 @@ Set these environment variables - for the AWS SDK that this relies on:
 * AWS_SECRET_ACCESS_KEY
 * AWS_DEFAULT_REGION - defaults to `us-east-1` if not set
 
-# Deployment Configuration
-The values for configuring the service will come from three places:
+# Build-Time Configuration
+The parameters for configuring the service come from three places:
 1) Command-line
 2) Environment variables
 3) AWS Secrets - the "fargate-helper" key
 
+## Required Parameters
+These parameters must be manually configured for the deployment to run:  
+* command: The command to run for the Docker service
+* containerPort: The port the service should run on
+* cpu: The CPU allocated for the service, where 1024 is equal to a full CPU
+* image: The DockerHub image to use for this service
+* memory: The amount of memory allocated for the service
+* name: The name of the service
+
+## Other Important Parameters
+Though not required, these are useful parameters for more advanced cases:
+* env: Key-value pair that is passed to the TaskDefition/container runtime
+* envFile: The relative path to a file that contains environment settings - set inside the TaskDefinition/container runtime
+* logGroup: The CloudWatch Log Group to use - defaults to `fargate-cluster`
+* passEnv: "true" or "false" - defaults to true. If set to false, will not automatically set pass thru environment variables in the build environment to the container environment
+* taskDefinition: A file to use as the baseline for the taskDefinition - if not specified, just uses the default that is included in the code
+
 ## Command-Line Configuration
-For the command-line, values are passed in with the format:  
+For the command-line, parameters are passed in with the format:  
 `--name value`
 
-For values with spaces, they should be passed in as so:  
+For parameters with spaces, they should be passed in as so:  
 `--name "my value"`
 
 **NOTE** The memory and CPU must be valid for Fargate. The supported configurations are here:  
 https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
 
 ## Environment Variables
-Values can also be set via environment variable
+Parameters can also be set via environment variable. If the parameter is not specified on the command-line, but is found in the environment, that will be used.
+
+For example:
+```
+export cpu=1024
+fargate create --name serviceName
+```
+
+In this case, the `cpu` will be set to `1024` for the service.
 
 ## AWS Secret Configuration
-We store certain key default values, such as DockerHub credentials, in defaults in our AWS Secrets.
+We store certain key default parameters, such as DockerHub credentials, in defaults in the AWS Secret Manager.  
+
+These are values that are generally universal for the account - these should not need to changed or overridden.
 
 They can be found under the name "fargate-helper". Values we store there are:
 * accountId: The AWS account ID
@@ -82,36 +109,19 @@ They can be found under the name "fargate-helper". Values we store there are:
 * subnets: The list of subnets to use
 * vpcId: The VPC ID used by this configuration - specified when creating the target group on the ALB
 
-The AWS secret values are meant to be one universal defaults for the account
-
-# Required Values
-These values must be manually configured for the deployment to run:  
-* command: The command to run for the Docker service
-* containerPort: The port the service should run on
-* cpu: The CPU allocated for the service, where 1024 is equal to a full CPU
-* image: The DockerHub image to use for this service
-* memory: The amount of memory allocated for the service
-* name: The name of the service
-
-# Other Important Values
-Though not required, these are useful parameters for more advanced cases:
-* env: Key-value pair that is passed to the TaskDefition/container runtime
-* envFile: The relative path to a file that contains environment settings - set inside the TaskDefinition/container runtime
-* logGroup: The CloudWatch Log Group to use - defaults to `fargate-cluster`
-* passEnv: "true" or "false" - defaults to true. If set to false, will not automatically set pass thru environment variables in the build environment to the container environment
-* taskDefinition: A file to use as the baseline for the taskDefinition - if not specified, just uses the default that is included in the code
-
-# Container Configuration
+# Runtime Configuration
 Environment variables can also be set inside the running container.
 
 If `--passEnv` is set to true, we take all the environment variables currently set and pass them to the container in the taskDefinition, under environment.
 
 Environment variables in the container can also be set by specifying on the command-line:  
-`fargate --env KEY=VALUE`
+`fargate create --env KEY=VALUE`
 
 This will set the environment variable `key` to `value` inside the container.
 
-# ELB Configuration
+Additionally, the `--envFile` parameter can be used - this takes as an argument a relative path to a file in key value form. All values in this file will be set in the container (via the Environment section on the TaskDefinition).
+
+# Load Balancer Configuration
 By default, we create a target group with rules on our ELB when first creating the service.
 
 The target group will be configured:
@@ -120,7 +130,14 @@ The target group will be configured:
 
 For more complex ELB configurations, we recommend they be done manually, and then only update be called (which does not modify the ELB configuration).
 
-# Example
+# Examples
+
+## Delete
+```
+fargate delete --name my-service
+```
+
+## Real-world
 To see a sample project that uses this, check out the Utterance Tester:  
 https://github.com/bespoken/UtteranceTester
 
