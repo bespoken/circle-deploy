@@ -4,7 +4,7 @@
 - [X] Figure out multiline in YAML configuration
 - [X] Parameterize subnet and security groups from TaskDefinition (should go in AWS Secrets)
 - [X] Add delete service - remove rules, target group, and service
-- [ ] Add scheduler
+- [ ] Add scheduler https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduled_tasks_cli_tutorial.html
 
 **Maybe**
 - [ ] Create custom log groups automatically

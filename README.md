@@ -40,6 +40,17 @@ For `delete`, the script will:
 2) Update the desiredCount to 0 for the service (necessary before deletion)
 4) Delete the service
 
+For `service`, the script will:
+1) Create the service if it does not exist
+1A) Update the service if it already exists
+
+For `schedule`, the script will (TO BE IMPLEMENTED):
+1) Register a task definition
+2) Create a Cloud Watch Event with cron configuration
+3) Associate the CloudWatch Event with the task definition
+More information here:  
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduled_tasks_cli_tutorial.html
+
 # Setup
 Install the package:  
 `npm install fargate-helper -g`
@@ -68,6 +79,7 @@ These parameters must be manually configured for the deployment to run:
 Though not required, these are useful parameters for more advanced cases:
 * env: Key-value pair that is passed to the TaskDefition/container runtime
 * envFile: The relative path to a file that contains environment settings - set inside the TaskDefinition/container runtime
+* hostname: The fully-qualified hostname for the service - i.e., "service.bespoken.tools". When the default <SERVICE>.bespoken.io is not appropriate.
 * logGroup: The CloudWatch Log Group to use - defaults to `fargate-cluster`
 * passEnv: "true" or "false" - defaults to true. If set to false, will not automatically set pass thru environment variables in the build environment to the container environment
 * taskDefinition: A file to use as the baseline for the taskDefinition - if not specified, just uses the default that is included in the code
