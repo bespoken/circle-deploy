@@ -1,7 +1,7 @@
 {
     "containerDefinitions": [{
 		"command": [
-            "COMMAND"
+            "${command}"
 		],
 		"entryPoint": [
             "sh",
@@ -9,32 +9,32 @@
         ],
 		"environment": [],
         "essential": true,
-        "image": "IMAGE_NAME",
+        "image": "${image}",
         "logConfiguration": {
             "logDriver": "awslogs",
             "options": {
-                "awslogs-group": "fargate-cluster",
+                "awslogs-group": "${logGroup}",
                 "awslogs-region": "us-east-1",
-                "awslogs-stream-prefix": "test-prefix"
+                "awslogs-stream-prefix": "${serviceName}"
             }
         },
-        "name": "SERVICE_NAME",
+        "name": "${serviceName}",
         "portMappings": [{
-            "containerPort": 3000,
-            "hostPort": 3000,
+            "containerPort": ${containerPort},
+            "hostPort": ${containerPort},
             "protocol": "tcp"
         }],
         "repositoryCredentials": {
-			"credentialsParameter": "DOCKER_HUB_CREDENTIALS"
+			"credentialsParameter": "${dockerHubSecretArn}"
 		}
 	}],
-	"cpu": "CPU",
-    "family": "SERVICE_NAME",
-    "executionRoleArn": "ROLE_ARN",
-    "memory": "MEMORY",
+	"cpu": "${cpu}",
+    "family": "${serviceName}",
+    "executionRoleArn": "${roleArn}",
+    "memory": "${memory}",
 	"networkMode": "awsvpc",
     "requiresCompatibilities": [
         "FARGATE"
 	],
-	"taskRoleArn": "ROLE_ARN"
+	"taskRoleArn": "${roleArn}"
 }
