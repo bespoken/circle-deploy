@@ -8,6 +8,7 @@ The tool supports the following actions:
 * delete: Deletes a service
 * service: Creates or updates a service (depending on if it already exists)
 * update: Updates a service
+* schedule: Create a scheduled task
 
 The syntax for the script is:  
 `fargate <action> <options>`
@@ -23,6 +24,16 @@ fargate service \
   --memory 2048 \
   --name my-service
 ```
+Example (creates or updates the scheduled task `my-scheduled-task` with the specified parameters):
+```
+fargate schedule \
+        --command "node lib/service.js" \
+        --cpu 1024 \
+        --env key=value \
+        --image bespoken/my-service-image \
+        --memory 2048 \
+        --cron "cron(0 12 * * ? *)" \
+        --name my-scheduled-task
 
 For `create`, the script will:  
 1) Register a task definition
@@ -44,12 +55,10 @@ For `service`, the script will:
 1) Create the service if it does not exist
 1A) Update the service if it already exists
 
-For `schedule`, the script will (TO BE IMPLEMENTED):
+For `schedule`, the script will:
 1) Register a task definition
 2) Create a Cloud Watch Event with cron configuration
 3) Associate the CloudWatch Event with the task definition
-More information here:  
-https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduled_tasks_cli_tutorial.html
 
 # Setup
 Install the package:  
