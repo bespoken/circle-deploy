@@ -34,6 +34,7 @@ fargate schedule \
         --memory 2048 \
         --cron "cron(0 12 * * ? *)" \
         --name my-scheduled-task
+```
 
 For `create`, the script will:  
 1) Register a task definition
