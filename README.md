@@ -61,6 +61,9 @@ For `schedule`, the script will:
 2) Create a Cloud Watch Event with cron configuration
 3) Associate the CloudWatch Event with the task definition
 
+More information here:  
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduled_tasks_cli_tutorial.html
+
 # Setup
 Install the package:  
 `npm install fargate-helper -g`
