@@ -1,6 +1,6 @@
 {
   "name": "fargate-helper",
-  "version": "0.4.0",
+  "version": "0.4.3",
   "description": "Helper scripts for deploying to Fargate",
   "main": "index.js",
   "bin": {
