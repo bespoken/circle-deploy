@@ -34,7 +34,7 @@
     "memory": "${memory}",
 	"networkMode": "awsvpc",
     "requiresCompatibilities": [
-        "FARGATE"
+        "${launchType}"
 	],
 	"taskRoleArn": "${roleArn}"
 }
