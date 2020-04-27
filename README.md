@@ -27,13 +27,13 @@ fargate service \
 Example (creates or updates the scheduled task `my-scheduled-task` with the specified parameters):
 ```
 fargate schedule \
-        --command "node lib/service.js" \
-        --cpu 1024 \
-        --env key=value \
-        --image bespoken/my-service-image \
-        --memory 2048 \
-        --cron "cron(0 12 * * ? *)" \
-        --name my-scheduled-task
+  --command "node lib/service.js" \
+  --cpu 1024 \
+  --env key=value \
+  --image bespoken/my-service-image \
+  --memory 2048 \
+  --cron "cron(0 12 * * ? *)" \
+  --name my-scheduled-task
 ```
 
 For `create`, the script will:  
@@ -93,6 +93,7 @@ Though not required, these are useful parameters for more advanced cases:
 * env: Key-value pair that is passed to the TaskDefition/container runtime
 * envFile: The relative path to a file that contains environment settings - set inside the TaskDefinition/container runtime
 * hostname: The fully-qualified hostname for the service - i.e., "service.bespoken.tools". When the default <SERVICE>.bespoken.io is not appropriate.
+* launchType: The launchType of the service and requiredCompatibilities of the task definition. Values can be EC2 | FARGATE. Defaults to FARGATE.
 * logGroup: The CloudWatch Log Group to use - defaults to `fargate-cluster`
 * passEnv: "true" or "false" - defaults to true. If set to false, will not automatically set pass thru environment variables in the build environment to the container environment
 * taskDefinition: A file to use as the baseline for the taskDefinition - if not specified, just uses the default that is included in the code
@@ -126,13 +127,17 @@ These are values that are generally universal for the account - these should not
 They can be found under the name "fargate-helper". Values we store there are:
 * accountId: The AWS account ID
 * albArn: The ARN for the ALB being used for this account
-* cluster: The fargate cluster name
+* cluster: The short name or full Amazon Resource Name (ARN) of the cluster on which to run your service.
+* clusterArn: Used for scheduled tasks, can only be an ARN. **TODO:** Unify with the cluster param.
 * dockerHubSecretArn: The name of the AWS Secret that stores our docker credentials
 * listenerArn: The ARN for the ALB listener being used for this account
 * roleArn: Used for taskRoleArn and executionRoleArn
 * securityGroup: The VPC security group to use
 * subnets: The list of subnets to use
 * vpcId: The VPC ID used by this configuration - specified when creating the target group on the ALB
+
+## EC2 Considerations
+By changing the `launchType` parameter to 'EC2' we can leverage all the current functionality and deploy to EC2, provided that the EC2 instances already exist on the target ECS cluster. 
 
 # Runtime Configuration
 Environment variables can also be set inside the running container.
