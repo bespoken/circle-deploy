@@ -94,6 +94,8 @@ Though not required, these are useful parameters for more advanced cases:
 ### EC2 Considerations
 By changing the `launchType` parameter to 'EC2' we can leverage all the current functionality and deploy to EC2, provided that the EC2 instances already exist on the target ECS cluster. We can create EC2 instances by using the `ec2-instance`.
 
+Also important, if `launchType` is 'EC2' the cpu and memory parameters will correspond to the `cpu` and `memoryReservation` of the service's container definition. For 'FARGATE' they correspond to the task level `cpu` and `memory` properties.
+
 ## Command-Line Configuration
 For the command-line, parameters are passed in with the format:  
 `--name value`
