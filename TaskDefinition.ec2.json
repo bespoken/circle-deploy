@@ -1,0 +1,40 @@
+{
+    "containerDefinitions": [{
+        "cpu": ${cpu},
+        "memoryReservation": ${memory},
+		"command": [
+            "${command}"
+		],
+		"entryPoint": [
+            "sh",
+            "-c"
+        ],
+		"environment": [],
+        "essential": true,
+        "image": "${image}",
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-group": "${logGroup}",
+                "awslogs-region": "us-east-1",
+                "awslogs-stream-prefix": "${serviceName}"
+            }
+        },
+        "name": "${serviceName}",
+        "portMappings": [{
+            "containerPort": ${containerPort},
+            "hostPort": ${containerPort},
+            "protocol": "tcp"
+        }],
+        "repositoryCredentials": {
+			"credentialsParameter": "${dockerHubSecretArn}"
+		}
+	}],
+    "family": "${serviceName}",
+    "executionRoleArn": "${roleArn}",
+	"networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "${launchType}"
+	],
+	"taskRoleArn": "${roleArn}"
+}

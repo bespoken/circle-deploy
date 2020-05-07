@@ -1,6 +1,6 @@
 {
     "containerDefinitions": [{
-		"command": [
+        "command": [
             "${command}"
 		],
 		"entryPoint": [
