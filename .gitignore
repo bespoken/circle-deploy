@@ -3,5 +3,3 @@ env.out
 hyper*
 node_modules
 *.out
-createEc2.sh
-createEc2Env
