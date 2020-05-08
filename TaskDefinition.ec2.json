@@ -23,7 +23,7 @@
         "name": "${serviceName}",
         "portMappings": [{
             "containerPort": ${containerPort},
-            "hostPort": ${containerPort},
+            "hostPort": 0,
             "protocol": "tcp"
         }],
         "repositoryCredentials": {
@@ -32,7 +32,7 @@
 	}],
     "family": "${serviceName}",
     "executionRoleArn": "${roleArn}",
-	"networkMode": "awsvpc",
+	"networkMode": "bridge",
     "requiresCompatibilities": [
         "${launchType}"
 	],

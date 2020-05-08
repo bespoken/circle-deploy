@@ -96,6 +96,12 @@ By changing the `launchType` parameter to 'EC2' we can leverage all the current 
 
 Also important, if `launchType` is 'EC2' the cpu and memory parameters will correspond to the `cpu` and `memoryReservation` of the service's container definition. For 'FARGATE' they correspond to the task level `cpu` and `memory` properties.
 
+Finally, for EC2 we'll be using the `bridge` network mode. This means: 
+- Using the targe group type `instance` instead of `ip`
+- Setting the `healthCheckPort` to `traffic-port`
+- Not setting the networkConfiguration at the service level
+- Setting the hostPort to 0 on the containerDefinition to leverage the Dynamic Port Mapping feature 
+
 ## Command-Line Configuration
 For the command-line, parameters are passed in with the format:  
 `--name value`
