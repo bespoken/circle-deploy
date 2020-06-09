@@ -8,7 +8,8 @@ The tool supports the following actions:
 * delete: Deletes a service
 * service: Creates or updates a service (depending on if it already exists)
 * update: Updates a service
-* schedule: Create a scheduled task
+* schedule: Creates a scheduled task
+* ec2-instance: Creates an EC2 instance to use inside an ECS cluster
 
 The syntax for the script is:  
 `fargate <action> <options>`
@@ -23,17 +24,6 @@ fargate service \
   --image bespoken/my-service-image \
   --memory 2048 \
   --name my-service
-```
-Example (creates or updates the scheduled task `my-scheduled-task` with the specified parameters):
-```
-fargate schedule \
-        --command "node lib/service.js" \
-        --cpu 1024 \
-        --env key=value \
-        --image bespoken/my-service-image \
-        --memory 2048 \
-        --cron "cron(0 12 * * ? *)" \
-        --name my-scheduled-task
 ```
 
 For `create`, the script will:  
@@ -61,6 +51,9 @@ For `schedule`, the script will:
 2) Create a Cloud Watch Event with cron configuration
 3) Associate the CloudWatch Event with the task definition
 
+For `ec2-instance`, the script will:
+1) Launch a new EC2 instance tied to the specified EC2 Cluster
+
 More information here:  
 https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduled_tasks_cli_tutorial.html
 
@@ -79,7 +72,7 @@ The parameters for configuring the service come from three places:
 2) Environment variables
 3) AWS Secrets - the "fargate-helper" key
 
-## Required Parameters
+## Required Parameters (fargate service)
 These parameters must be manually configured for the deployment to run:  
 * command: The command to run for the Docker service
 * containerPort: The port the service should run on
@@ -93,9 +86,21 @@ Though not required, these are useful parameters for more advanced cases:
 * env: Key-value pair that is passed to the TaskDefition/container runtime
 * envFile: The relative path to a file that contains environment settings - set inside the TaskDefinition/container runtime
 * hostname: The fully-qualified hostname for the service - i.e., "service.bespoken.tools". When the default <SERVICE>.bespoken.io is not appropriate.
+* launchType: The launchType of the service and requiredCompatibilities of the task definition. Values can be EC2 | FARGATE. Defaults to FARGATE.
 * logGroup: The CloudWatch Log Group to use - defaults to `fargate-cluster`
 * passEnv: "true" or "false" - defaults to true. If set to false, will not automatically set pass thru environment variables in the build environment to the container environment
 * taskDefinition: A file to use as the baseline for the taskDefinition - if not specified, just uses the default that is included in the code
+
+### EC2 Considerations
+By changing the `launchType` parameter to 'EC2' we can leverage all the current functionality and deploy to EC2, provided that the EC2 instances already exist on the target ECS cluster. We can create EC2 instances by using the `ec2-instance`.
+
+Also important, if `launchType` is 'EC2' the cpu and memory parameters will correspond to the `cpu` and `memoryReservation` of the service's container definition. For 'FARGATE' they correspond to the task level `cpu` and `memory` properties.
+
+Finally, for EC2 we'll be using the `bridge` network mode. This means: 
+- Using the targe group type `instance` instead of `ip`
+- Setting the `healthCheckPort` to `traffic-port`
+- Not setting the networkConfiguration at the service level
+- Setting the hostPort to 0 on the containerDefinition to leverage the Dynamic Port Mapping feature 
 
 ## Command-Line Configuration
 For the command-line, parameters are passed in with the format:  
@@ -126,13 +131,20 @@ These are values that are generally universal for the account - these should not
 They can be found under the name "fargate-helper". Values we store there are:
 * accountId: The AWS account ID
 * albArn: The ARN for the ALB being used for this account
-* cluster: The fargate cluster name
+* cluster: The short name or full Amazon Resource Name (ARN) of the cluster on which to run your service.
+* clusterArn: Used for scheduled tasks, can only be an ARN. **TODO:** Unify with the cluster param.
 * dockerHubSecretArn: The name of the AWS Secret that stores our docker credentials
 * listenerArn: The ARN for the ALB listener being used for this account
 * roleArn: Used for taskRoleArn and executionRoleArn
 * securityGroup: The VPC security group to use
 * subnets: The list of subnets to use
 * vpcId: The VPC ID used by this configuration - specified when creating the target group on the ALB
+
+For ec2, the following values were added:
+* IAMInstanceProfile: An instance profile is a container for an IAM role that you can use to pass role information to an EC2 instance when the instance starts. Defaults to "ecsInstanceRole".
+* imageId: An Amazon Machine Image (AMI) provides the information required to launch an instance. Defaults to "ami-09edd32d9b0990d49", which is a Linux machine with the ECS agent installed.
+* instanceType:  Instance types comprise varying combinations of CPU, memory, storage, and networking capacity. Default is "t3.micro".
+* keyPair: Name of the key pair used for doing SSH to the EC2 instance. Defaults to "ecs-ec2-cluster".
 
 # Runtime Configuration
 Environment variables can also be set inside the running container.
@@ -155,11 +167,33 @@ The target group will be configured:
 
 For more complex ELB configurations, we recommend they be done manually, and then only update be called (which does not modify the ELB configuration).
 
-# Examples
+## Examples
 
-## Delete
+### Delete
 ```
 fargate delete --name my-service
+```
+
+### Create a scheduled task
+```
+fargate schedule \
+  --command "node lib/service.js" \
+  --cpu 1024 \
+  --env key=value \
+  --image bespoken/my-service-image \
+  --memory 2048 \
+  --cron "cron(0 12 * * ? *)" \
+  --name my-scheduled-task
+```
+
+### Create an EC2 instance 
+```
+fargate ec2-instance \
+  --cluster fargate-helper \
+  --IAMInstanceProfile ecsInstanceRole \
+  --imageId ami-09edd32d9b0990d49 \
+  --instanceType t3.micro \
+  --keyPair ecs-ec2-cluster \
 ```
 
 ## Real-world

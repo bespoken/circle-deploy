@@ -1,5 +1,7 @@
 {
     "containerDefinitions": [{
+        "cpu": ${cpu},
+        "memoryReservation": ${memory},
 		"command": [
             "${command}"
 		],
@@ -21,20 +23,18 @@
         "name": "${serviceName}",
         "portMappings": [{
             "containerPort": ${containerPort},
-            "hostPort": ${containerPort},
+            "hostPort": 0,
             "protocol": "tcp"
         }],
         "repositoryCredentials": {
 			"credentialsParameter": "${dockerHubSecretArn}"
 		}
 	}],
-	"cpu": "${cpu}",
     "family": "${serviceName}",
     "executionRoleArn": "${roleArn}",
-    "memory": "${memory}",
-	"networkMode": "awsvpc",
+	"networkMode": "bridge",
     "requiresCompatibilities": [
-        "FARGATE"
+        "${launchType}"
 	],
 	"taskRoleArn": "${roleArn}"
 }
