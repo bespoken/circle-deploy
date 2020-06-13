@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/bespoken/circle-deploy#readme",
   "dependencies": {
-    "aws-sdk": "^2.382.0",
+    "aws-sdk": "^2.648.0",
     "dotenv": "^6.2.0"
   }
 }
